@@ -1,0 +1,70 @@
+{
+  "name": "smart-paste",
+  "displayName": "Smart Paste",
+  "description": "Create a file with automatic file name generation from pasted text",
+  "version": "0.0.1",
+  "publisher": "publisher",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./src/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Smart Paste",
+      "properties": {
+        "smartPaste.openAIKey": {
+          "type": "string",
+          "default": "",
+          "description": "Smart Paste OpenAI key"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "smartPaste.customPaste",
+        "title": "Create File from Paste"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "smartPaste.customPaste",
+        "key": "ctrl+v",
+        "when": "explorerViewletFocus"
+      },
+      {
+        "command": "smartPaste.customPaste",
+        "key": "cmd+v",
+        "when": "explorerViewletFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "pretest": "npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.92.0",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.11.0",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.4.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  },
+  "imports": {
+    "#customImport": "./src/customImport.mjs",
+    "#vscode": "./src/vscode.mjs"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^0.0.44",
+    "@xenova/transformers": "^2.17.2",
+    "ai": "^3.3.5"
+  }
+}
