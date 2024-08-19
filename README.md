@@ -42,4 +42,4 @@ We welcome your feedback and contributions! Please open an issue or submit a pul
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/KLaci/smart-paste/LICENSE) file for details.
