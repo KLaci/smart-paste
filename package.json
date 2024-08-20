@@ -2,7 +2,7 @@
   "name": "smart-paste",
   "displayName": "Smart File Paste",
   "description": "Auto-generate file names from your pasted text.",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "publisher": "laszlokiss",
   "engines": {
     "vscode": "^1.92.0"

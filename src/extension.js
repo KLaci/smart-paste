@@ -4,9 +4,12 @@ const vscode = require('vscode');
 const { generateText } = require('ai');
 const { createOpenAI } = require('@ai-sdk/openai');
 
+const MAX_LENGTH = 2000;
+
 function getFolderFromPath(filePath) {
 	try {
 		const stats = fs.statSync(filePath);
+
 
 		if (stats.isDirectory()) {
 			return filePath;
@@ -38,23 +41,58 @@ async function generateFileNameWithOpenAI(clipboardText) {
 
 	const { text } = await generateText({
 		model: openai('gpt-4o-mini'),
-		system: `You are a code file name generator. You receive the content of the file. 
-Only return with the suggested file name, no explanation.`,
+		system: `You are a file name generator. Given the file's content, return the most common or probable name based on its context and type. If it is a well-known file format with an exact name, use that name. No explanations.`,
 		prompt: `Code snippet:
-${clipboardText}`,
+${clipboardText.length > MAX_LENGTH ? clipboardText.slice(0, MAX_LENGTH) + '...' : clipboardText}`,
 	});
 
 	return text;
+}
+
+
+function getCurrentFolder() {
+	const editor = vscode.window.activeTextEditor;
+
+	if (editor) {
+		const filePath = editor.document.uri.fsPath;
+
+		vscode.window.showInformationMessage(`Current file path: ${filePath}`);
+
+		// Check if the filePath is within the workspace folders
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+
+		if (workspaceFolders && workspaceFolders.length > 0) {
+			for (const folder of workspaceFolders) {
+				if (filePath.startsWith(folder.uri.fsPath)) {
+					const folderPath = getFolderFromPath(filePath);
+					console.log('Current folder path:', folderPath);
+					return folderPath;
+				}
+			}
+		}
+
+		// Fallback to the first workspace folder if the file is not within any workspace folder
+		const fallbackFolderPath = workspaceFolders[0].uri.fsPath;
+		return fallbackFolderPath;
+	} else {
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+		if (workspaceFolders && workspaceFolders.length > 0) {
+			const folderPath = workspaceFolders[0].uri.fsPath;
+			console.log('Current folder path:', folderPath);
+			return folderPath;
+		} else {
+			vscode.window.showErrorMessage('No workspace folder found.');
+		}
+	}
 }
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context) {   // Register a command to override the default paste command
 	const disposable = vscode.commands.registerCommand('smartPaste.customPaste', async () => {
+		const folderPath = getCurrentFolder();
 
-		const editor = vscode.window.activeTextEditor;
-
-		if (editor) {
+		if (folderPath) {
 			// Execute the default paste command
 			await vscode.commands.executeCommand('editor.action.clipboardPasteAction');
 
@@ -64,7 +102,6 @@ export function activate(context) {   // Register a command to override the defa
 				return;
 			}
 
-			const folderPath = getFolderFromPath(editor.document.uri.fsPath);
 
 			const fileName = await generateFileNameWithOpenAI(clipboardText);
 			let filePath = path.join(folderPath, fileName);
