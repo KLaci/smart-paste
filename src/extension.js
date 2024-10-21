@@ -26,22 +26,29 @@ function getFolderFromPath(filePath) {
 async function generateFileNameWithOpenAI(clipboardText) {
 	const config = vscode.workspace.getConfiguration('smartPaste');
 
-	// Access your custom option
+	// Access your custom options
 	const apiKey = config.get('openAIKey');
+	const baseURL = config.get('openAIBaseURL');
+	const modelName = config.get('modelName');
+	const systemPrompt = config.get('systemPrompt');
 
 	if (!apiKey) {
 		vscode.window.showErrorMessage('OpenAI API key not found. Please add it to the settings.');
 		return;
 	}
 
-	const openai = createOpenAI({
-		apiKey
-	});
+	let openaiConfig = { apiKey, compatibility: 'strict' };
 
+	if (baseURL && baseURL !== 'https://api.openai.com/v1') {
+		openaiConfig.baseURL = baseURL;
+		openaiConfig.compatibility = 'compatible';
+	}
+
+	const openai = createOpenAI(openaiConfig);
 
 	const { text } = await generateText({
-		model: openai('gpt-4o-mini'),
-		system: `You are a file name generator. Given the file's content, return the most common or probable name based on its context and type. If it is a well-known file format with an exact name, use that name. No explanations.`,
+		model: openai(modelName),
+		system: systemPrompt,
 		prompt: `Code snippet:
 ${clipboardText.length > MAX_LENGTH ? clipboardText.slice(0, MAX_LENGTH) + '...' : clipboardText}`,
 	});

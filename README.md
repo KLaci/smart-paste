@@ -22,6 +22,7 @@ To use Smart Paste, you need to provide your OpenAI API key:
 1. Open VS Code Settings (File > Preferences > Settings)
 2. Search for "Smart Paste"
 3. Enter your OpenAI API key in the "smartPaste.openAIKey" field
+4. (Optional) If you're using a custom OpenAI API endpoint, enter the base URL in the "smartPaste.openAIBaseURL" field
 
 ## Usage
 
@@ -35,6 +36,9 @@ To use Smart Paste, you need to provide your OpenAI API key:
 You can customize Smart Paste behavior in VS Code settings:
 
 - `smartPaste.openAIKey`: Your OpenAI API key (required)
+- `smartPaste.openAIBaseURL`: Base URL for the OpenAI API (optional, defaults to "https://api.openai.com/v1")
+- `smartPaste.modelName`: Model name to use for generating file names (defaults to "gpt-4o-mini")
+- `smartPaste.systemPrompt`: System prompt for the AI model (defaults to a file name generation prompt)
 
 ## Feedback and Contributions
 
