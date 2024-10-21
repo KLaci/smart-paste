@@ -24,6 +24,21 @@
           "type": "string",
           "default": "",
           "description": "Smart Paste OpenAI key"
+        },
+        "smartPaste.openAIBaseURL": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "Smart Paste OpenAI Base URL"
+        },
+        "smartPaste.modelName": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "Model name to use for generating file names"
+        },
+        "smartPaste.systemPrompt": {
+          "type": "string",
+          "default": "You are a file name generator. Given the file's content, return the most common or probable name based on its context and type. If it is a well-known file format with an exact name, use that name. No explanations.",
+          "description": "System prompt for the AI model"
         }
       }
     },
